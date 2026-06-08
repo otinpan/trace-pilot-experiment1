@@ -1,0 +1,50 @@
+-// @trace-pilot 93865884d8d22111f10b91a82813f75525fc743b
+-  return zigzag_horizontal(state,logger);
++  State horizontal_state=state;
++  State vertical_state=state;
++
++  std::vector<Pos> horizontal_result=zigzag_horizontal(horizontal_state,logger);
++  std::vector<Pos> vertical_result=zigzag_vertical(vertical_state,logger);
++
++  if(horizontal_state.score()>=vertical_state.score()){
++    state=horizontal_state;
++    logger.log(state);
++    return horizontal_result;
++  }
++
++  state=vertical_state;
++  logger.log(state);
++  return vertical_result;
+ 
+-  logger.log(state);
+-// @trace-pilot 93865884d8d22111f10b91a82813f75525fc743b
+-  (void)state;
+-  return {};
++
++  std::vector<Pos> result;
++  result.reserve(map_size*map_size);
++  result.push_back(state.pos());
++
++  for(int j=0;j<map_size;j++){
++    if(j%2==0){
++      while(state.pos().i+1<map_size){
++        bool ok=state.apply(Direction::DOWN);
++        assert(ok);
++        result.push_back(state.pos());
++      }
++    }else{
++      while(state.pos().i>0){
++        bool ok=state.apply(Direction::UP);
++        assert(ok);
++        result.push_back(state.pos());
++      }
++    }
++
++    if(j+1<map_size){
++      bool ok=state.apply(Direction::RIGHT);
++      assert(ok);
++      result.push_back(state.pos());
++    }
++  }
++
++  return result;
