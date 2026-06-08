@@ -1,0 +1,1 @@
+Implement a greedy strategy function that generates a zigzag horizontal path across the entire grid map, moving right on even rows and left on odd rows, and moving down to the next row after each horizontal pass.
