@@ -1,0 +1,1 @@
+Implement a greedy strategy in the function that generates a zigzag path covering all positions in the kingdom grid, alternating direction each row (left to right on even rows, right to left on odd rows).
