@@ -1,0 +1,9 @@
++    struct MoveHistory{
++      Direction dir;
++      Pos from;
++      Pos to;
++      long long score_delta;
++    };
++
+-    std::vector<Direction> path_;
++    std::vector<MoveHistory> history_;
