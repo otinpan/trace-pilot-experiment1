@@ -1,0 +1,69 @@
+# Record 1: file:///home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp
+```diff
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -8,15 +8,38 @@
+ 
+ Greedy::~Greedy()=default;
+ 
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
++  return zigzag_horizontal(state,logger);
+ }
+ 
+ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
++  (void)logger;
+ 
++  std::vector<Pos> result;
++  result.push_back(state.pos());
++
++  const int n=static_cast<int>(state.kingdom().size());
++  auto move=[&](Direction dir){
++    bool ok=state.apply(dir);
++    assert(ok);
++    result.push_back(state.pos());
++  };
++
++  for(int i=0;i<n;i++){
++    Direction horizontal=(i%2==0)?Direction::RIGHT:Direction::LEFT;
++    for(int j=1;j<n;j++){
++      move(horizontal);
++    }
++
++    if(i+1<n){
++      move(Direction::DOWN);
++    }
++  }
++
++  return result;
+ }
+ 
+ 
+ std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
+ 
+ }
+-
+
+```
+
+まず既存のパターン命名と実装場所を確認します。ビルドとテストは実行しません。
+
+`zigzag_horizontal` は宣言と空実装がすでにあります。周辺の `State` と既存戦略を読んで、同じ戻り値形式で埋めます。
+
+`State::apply` は盤外と訪問済みを弾き、成功した移動だけ状態を進める形です。横ジグザグは移動列を作って同時に `State` に適用する実装にします。
+
+戻り値は `Pos` の列なので、出力仕様に合わせて初期位置 `(0,0)` を含む訪問順として返すのが自然です。`solve` も未実装なので、横ジグザグを使うようにつなげます。
+
+これから `greedy.cpp` だけを編集します。`solve` は `zigzag_horizontal` を呼び、横方向に各行を蛇行して全マスを訪問する列を返すようにします。
+
+横ジグザグ本体は入りました。要求どおりビルドやテストはせず、差分だけ確認します。
+
+`zigzag_horizontal` を実装しました。
+
+変更点:
+- [src/strategy/greedy.cpp](/home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp:11)
+  - `solve()` から `zigzag_horizontal()` を呼ぶように変更
+  - `(0,0)` から開始し、各行を左右交互に蛇行して全マスを訪問
+  - `State::apply()` で状態を進めつつ、訪問順 `std::vector<Pos>` を返却
+
+指示どおり、ビルドとテストは実行していません。
