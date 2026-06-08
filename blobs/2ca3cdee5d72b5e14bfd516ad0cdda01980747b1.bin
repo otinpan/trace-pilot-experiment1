@@ -1,0 +1,1 @@
+Implement a greedy path traversal strategy that systematically covers the entire map by moving right and left alternately for each row, then moving down to the next row until the whole map is covered.
