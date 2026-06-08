@@ -1,0 +1,19 @@
+<environment_context>
+  <cwd>/home/hase/trace-pilot-experiment1</cwd>
+  <shell>bash</shell>
+  <current_date>2026-06-08</current_date>
+  <timezone>Asia/Tokyo</timezone>
+  <filesystem><workspace_roots><root>/home/hase/trace-pilot-experiment1</root></workspace_roots><permission_profile type="managed"><file_system type="restricted"><entry access="read"><special>:root</special></entry><entry access="write"><path>/home/hase/trace-pilot-experiment1</path></entry><entry access="write"><special>:slash_tmp</special></entry><entry access="write"><special>:tmpdir</special></entry><entry access="read"><path>/home/hase/trace-pilot-experiment1/.git</path></entry><entry access="read"><path>/home/hase/trace-pilot-experiment1/.agents</path></entry><entry access="read"><path>/home/hase/trace-pilot-experiment1/.codex</path></entry></file_system></permission_profile></filesystem>
+</environment_context>
+
+# Context from my IDE setup:
+
+## Active file: src/strategy/greedy.cpp
+
+## Open tabs:
+- greedy.cpp: src/strategy/greedy.cpp
+- events.jsonl: .intent-tracer/events.jsonl
+- CMakeLists.txt: CMakeLists.txt
+
+## My request for Codex:
+greedyのzigzag_horizontalを完成させてください
