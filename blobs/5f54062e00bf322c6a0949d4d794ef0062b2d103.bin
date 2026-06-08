@@ -1,0 +1,1 @@
+Implement a C++ State class for a grid-based game representing a kingdom. The class should manage the game's state including position, moves, score, and allow applying moves and undoing moves. Also update the .gitignore to exclude any intent tracing directory.
