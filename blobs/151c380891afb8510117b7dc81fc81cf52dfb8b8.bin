@@ -1,0 +1,1 @@
+Implement a State class to represent a game state with a 2D kingdom grid, supporting moves in given directions, tracking the current position and score, and enabling undo functionality.
