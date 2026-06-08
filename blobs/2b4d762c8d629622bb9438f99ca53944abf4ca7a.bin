@@ -1,0 +1,40 @@
+# Record 1: /home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp
+```diff
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -11,12 +11,29 @@
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
+ }
+ 
+ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
++  std::vector<Pos> path;
++  path.push_back(state.pos());
+ 
++  for(int i=0;i<map_size;i++){
++    Direction horizontal_dir=(i%2==0)?Direction::RIGHT:Direction::LEFT;
++    for(int step=1;step<map_size;step++){
++      bool ok=state.apply(horizontal_dir);
++      assert(ok);
++      path.push_back(state.pos());
++    }
++
++    if(i+1<map_size){
++      bool ok=state.apply(Direction::DOWN);
++      assert(ok);
++      path.push_back(state.pos());
++    }
++  }
++
++  return path;
+ }
+ 
+ 
+ std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
+ 
+ }
+-
+
+```
+
+The LLM generated a function that constructs a path vector starting from the initial position and iteratively applies horizontal moves right and left in alternating rows, moving down after each row, with assertions to ensure moves are valid, ultimately returning the full path covering the entire map.
