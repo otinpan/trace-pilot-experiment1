@@ -1,0 +1,90 @@
+# Record 1: /home/hase/trace-pilot-experiment1/src/state.h
+```diff
+===================================================================
+--- state.h (before)	snapshot
++++ state.h (after)	external
+@@ -0,0 +1,30 @@
++#pragma once
++#include<iostream>
++#include<vector>
++
++#include"common.h"
++
++class State{
++  public:
++    State(std::vector<std::vector<int>> kingdom);
++    ~State();
++
++    bool apply(Direction dir);
++    void undo();
++
++
++  private:
++    struct MoveHistory{
++      Direction dir;
++      Pos from;
++      Pos to;
++      long long score_delta;
++    };
++
++    std::vector<std::vector<int>> init_kingdom_;
++    std::vector<std::vector<int>> kingdom_;
++    Pos pos_;
++    std::vector<MoveHistory> history_;
++    long long score_;
++    int turn_;
++};
+
+```
+
+# Record 2: /home/hase/trace-pilot-experiment1/src/state.cpp
+```diff
+===================================================================
+--- state.cpp (before)	snapshot
++++ state.cpp (after)	idle
+@@ -5,9 +5,9 @@
+   ,init_kingdom_(kingdom)
+   ,pos_(Pos(0,0))
+   ,turn_(0)
+   ,score_(0)
+-  ,path_({})
++  ,history_({})
+ {
+ 
+   kingdom_[pos_.i][pos_.j]=-1;
+ }
+@@ -22,14 +22,28 @@
+   if(kingdom_[next_pos.i][next_pos.j]==-1){
+     return false;
+   }
+ 
++  int next_turn=turn_+1;
++  long long score_delta=1LL*next_turn*init_kingdom_[next_pos.i][next_pos.j];
++  history_.push_back({dir,pos_,next_pos,score_delta});
++
+   pos_=next_pos;
+   kingdom_[pos_.i][pos_.j]=-1;
+-  path_.emplace_back(dir);
++  turn_=next_turn;
++  score_+=score_delta;
+   return true;
+ }
+ 
+ void State::undo(){
++  if(history_.empty()){
++    return;
++  }
+ 
+-}
++  MoveHistory last=history_.back();
++  history_.pop_back();
+ 
++  kingdom_[last.to.i][last.to.j]=init_kingdom_[last.to.i][last.to.j];
++  pos_=last.from;
++  score_-=last.score_delta;
++  --turn_;
++}
+
+```
+
+Code defining a State class with constructors, private data members including the kingdom grid, current position, move history, score, and turn count. It includes an apply method to perform a move in a specified direction, updating the position, score, and move history accordingly, and an undo method to revert the last move by restoring the position, score, and turn count from the history.
