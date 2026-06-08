@@ -1,0 +1,1 @@
+Implement a greedy pathfinding algorithm that generates a path covering every cell in a grid map of size 'map_size'. The path should snake through the grid row by row.
