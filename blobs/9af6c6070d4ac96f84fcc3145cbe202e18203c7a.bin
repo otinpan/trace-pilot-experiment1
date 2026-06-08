@@ -1,0 +1,100 @@
+# Record 1: file:///home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp
+```diff
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -8,15 +8,44 @@
+ 
+ Greedy::~Greedy()=default;
+ 
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
++  return zigzag_horizontal(state,logger);
+ }
+ 
+ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
++  std::vector<Pos> result;
++  result.reserve(map_size*map_size);
++  result.push_back(state.pos());
+ 
++  for(int i=0;i<map_size;i++){
++    if(i%2==0){
++      while(state.pos().j+1<map_size){
++        bool ok=state.apply(Direction::RIGHT);
++        assert(ok);
++        result.push_back(state.pos());
++      }
++    }else{
++      while(state.pos().j>0){
++        bool ok=state.apply(Direction::LEFT);
++        assert(ok);
++        result.push_back(state.pos());
++      }
++    }
++
++    if(i+1<map_size){
++      bool ok=state.apply(Direction::DOWN);
++      assert(ok);
++      result.push_back(state.pos());
++    }
++  }
++
++  logger.log(state);
++  return result;
+ }
+ 
+ 
+ std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
+-
++  (void)state;
++  (void)logger;
++  return {};
+ }
+-
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment1/build/CMakeFiles/TargetDirectories.txt
+```diff
+===================================================================
+--- TargetDirectories.txt (before)	snapshot
++++ TargetDirectories.txt (after)	create
+@@ -0,0 +1,3 @@
++/home/hase/trace-pilot-experiment1/build/CMakeFiles/ahc062.dir
++/home/hase/trace-pilot-experiment1/build/CMakeFiles/edit_cache.dir
++/home/hase/trace-pilot-experiment1/build/CMakeFiles/rebuild_cache.dir
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment1/build/CMakeFiles/ahc062.dir/link.txt
+```diff
+===================================================================
+--- link.txt (before)	snapshot
++++ link.txt (after)	create
+@@ -0,0 +1,1 @@
++/usr/bin/c++ CMakeFiles/ahc062.dir/src/main.cpp.o CMakeFiles/ahc062.dir/src/logger.cpp.o CMakeFiles/ahc062.dir/src/simulator.cpp.o CMakeFiles/ahc062.dir/src/state.cpp.o CMakeFiles/ahc062.dir/src/strategy/strategy.cpp.o CMakeFiles/ahc062.dir/src/strategy/greedy.cpp.o -o ahc062 
+
+```
+
+まず `greedy.cpp` と周辺の型・既存戦略を読んで、`zigzag_horizontal` がどういう契約で動くべきか確認します。既存のスタイルに合わせて最小限で埋めますね。
+
+`greedy.cpp` は空実装だけなので、`State` や入出力形式側から「返す `Pos` 列」の意味を拾っています。盤面サイズや障害物の扱いが見えたら、その制約内で水平ジグザグを組みます。
+
+README 上は戻り値は全訪問座標列、初期位置 `(0,0)` も含めるのが自然です。`State::apply` は移動先だけを採点する形なので、`zigzag_horizontal` では `result` に現在位置を入れてから右左に蛇行して全マスを訪問する実装にします。
+
+これから [greedy.cpp](/home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp) だけを編集します。`solve()` から水平ジグザグを呼ぶようにもして、外から `Greedy` を使ったときにそのまま動く状態にします。
+
+水平ジグザグ本体と `solve()` の接続を入れました。次に CMake ビルドでコンパイルが通るか確認します。
+
+ビルドは通りました。最後に差分だけ見て、余計な変更を混ぜていないか軽く確認します。
+
+`greedy` の `zigzag_horizontal` を実装しました。
+
+変更内容:
+- [greedy.cpp](/home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp) で `(0,0)` から横方向に蛇行して全マスを訪問
+- `State::apply()` を使って `RIGHT / LEFT / DOWN` に移動
+- 訪問した `Pos` を順に `result` へ追加
+- `solve()` から `zigzag_horizontal()` を呼ぶように接続
+- `zigzag_vertical()` は未実装ですが、未定義動作を避けるため空 vector を返すようにしました
+
+確認:
+- `cmake --build build` は成功しました。
