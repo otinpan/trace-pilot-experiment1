@@ -1,0 +1,47 @@
+# Record 1: /home/hase/trace-pilot-experiment1/src/strategy/greedy.cpp
+```diff
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -8,15 +8,36 @@
+ 
+ Greedy::~Greedy()=default;
+ 
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
++// @trace-pilot fa5a83dae02ab8678990a193947a9f569f42af84
++  return zigzag_horizontal(state,logger);
+ }
+ 
+ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
++// @trace-pilot fa5a83dae02ab8678990a193947a9f569f42af84
++  (void)logger;
+ 
++// @trace-pilot fa5a83dae02ab8678990a193947a9f569f42af84
++  int n=static_cast<int>(state.kingdom().size());
++  std::vector<Pos> path;
++  path.reserve(n*n);
++
++  for(int i=0;i<n;i++){
++    if(i%2==0){
++      for(int j=0;j<n;j++){
++        path.emplace_back(i,j);
++      }
++    }else{
++      for(int j=n-1;j>=0;j--){
++        path.emplace_back(i,j);
++      }
++    }
++  }
++
++  return path;
+ }
+ 
+ 
+ std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
+ 
+ }
+-
+
+```
+
+The LLM generated a function that computes a path for the greedy strategy by iterating over the grid rows and columns: for even rows, it scans left to right; for odd rows, right to left, thereby creating a zigzag horizontal path covering all positions in the kingdom.
