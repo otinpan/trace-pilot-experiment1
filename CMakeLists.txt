@@ -12,6 +12,7 @@ add_executable(ahc062
     src/simulator.cpp
     src/state.cpp
     src/strategy/strategy.cpp
+    src/strategy/greedy.cpp
 )
 
 target_include_directories(ahc062 PRIVATE

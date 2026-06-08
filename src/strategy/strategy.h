@@ -13,8 +13,4 @@ class Strategy{
     virtual ~Strategy();
 
     virtual std::vector<Pos> solve(State& state,Logger& logger);
-
-  protected:
-    
-
 };

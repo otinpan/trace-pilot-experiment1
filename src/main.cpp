@@ -1,6 +1,10 @@
 #include<iostream>
 #include<vector>
 
+#include"common.h"
+#include"strategy/greedy.h"
+#include"state.h"
+#include"simulator.h"
 int map_size=0;
 
 int main(){
@@ -16,4 +20,16 @@ int main(){
       std::cin>>g[i][j];
     }
   }
+
+  State state(g);
+  Logger logger("log.txt");
+
+  Greedy strategy;
+  std::vector<Pos> result=strategy.solve(state,logger);
+
+  for(const auto& res:result){
+    std::cout<<res.i<<" "<<res.j<<'\n';
+  }
+
+  return 0;
 }
