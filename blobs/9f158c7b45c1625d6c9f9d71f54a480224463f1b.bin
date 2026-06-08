@@ -1,0 +1,1 @@
+Implement a function that generates a zigzag horizontal path for a state on a grid map, moving right in even rows and left in odd rows, moving down after each row, and returns the path of positions.
