@@ -1,0 +1,1 @@
+Implement a greedy pathfinding strategy that generates a zigzag horizontal traversal over a grid representing the kingdom in the state, returning a vector of positions to visit in that order.
