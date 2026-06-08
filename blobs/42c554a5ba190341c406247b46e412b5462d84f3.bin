@@ -1,0 +1,42 @@
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -8,15 +8,37 @@
+ 
+ Greedy::~Greedy()=default;
+ 
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
++  return zigzag_horizontal(state,logger);
+ }
+ 
+ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
++  (void)logger;
+ 
++  std::vector<Pos> path;
++  path.reserve(map_size*map_size);
++  path.push_back(state.pos());
++
++  for(int i=0;i<map_size;i++){
++    Direction horizontal_dir=(i%2==0)?Direction::RIGHT:Direction::LEFT;
++    for(int j=1;j<map_size;j++){
++      bool applied=state.apply(horizontal_dir);
++      assert(applied);
++      path.push_back(state.pos());
++    }
++
++    if(i+1<map_size){
++      bool applied=state.apply(Direction::DOWN);
++      assert(applied);
++      path.push_back(state.pos());
++    }
++  }
++
++  return path;
++
+ }
+ 
+ 
+ std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
+ 
+ }
+-
