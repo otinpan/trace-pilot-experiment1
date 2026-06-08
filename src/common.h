@@ -27,7 +27,7 @@ struct Pos{
   }
 
   bool is_on_map() const{
-    return i>=0 && i<=map_size && j>=0 && j<map_size;
+    return i>=0 && i<map_size && j>=0 && j<map_size;
   }
 };
 
