@@ -1,0 +1,1 @@
+Implement a greedy strategy that generates a zigzag horizontal path over the kingdom grid starting from the top-left corner, moving row by row alternating directions to cover all positions.
