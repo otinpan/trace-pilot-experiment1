@@ -1,0 +1,1 @@
+Implement a function in C++ that generates a greedy traversal path covering all positions in a grid of size map_size x map_size in a zigzag manner, starting from the top-left corner, moving right in the first row, left in the second row, and so on, returning a vector of positions.
