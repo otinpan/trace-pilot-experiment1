@@ -1,0 +1,34 @@
++  return zigzag_horizontal(state,logger);
++  std::vector<Pos> result;
++  result.reserve(map_size*map_size);
++  result.push_back(state.pos());
+ 
++  for(int i=0;i<map_size;i++){
++    if(i%2==0){
++      while(state.pos().j+1<map_size){
++        bool ok=state.apply(Direction::RIGHT);
++        assert(ok);
++        result.push_back(state.pos());
++      }
++    }else{
++      while(state.pos().j>0){
++        bool ok=state.apply(Direction::LEFT);
++        assert(ok);
++        result.push_back(state.pos());
++      }
++    }
++
++    if(i+1<map_size){
++      bool ok=state.apply(Direction::DOWN);
++      assert(ok);
++      result.push_back(state.pos());
++    }
++  }
++
++  logger.log(state);
++  return result;
+-
++  (void)state;
++  (void)logger;
++  return {};
+-
