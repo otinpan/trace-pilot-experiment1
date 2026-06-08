@@ -1,0 +1,1 @@
+Implement a greedy pathfinding strategy in C++ that generates a serpentine (zigzag) path covering the entire map grid by moving right and left alternately on each row and moving down between rows.
