@@ -1,0 +1,34 @@
+===================================================================
+--- greedy.cpp (before)	snapshot
++++ greedy.cpp (after)	idle
+@@ -11,12 +11,29 @@
+ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
+ }
+ 
+ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
++  (void)state;
++  (void)logger;
+ 
++  std::vector<Pos> path;
++  path.reserve(map_size*map_size);
++
++  for(int i=0;i<map_size;i++){
++    if(i%2==0){
++      for(int j=0;j<map_size;j++){
++        path.emplace_back(i,j);
++      }
++    }else{
++      for(int j=map_size-1;j>=0;j--){
++        path.emplace_back(i,j);
++      }
++    }
++  }
++
++  return path;
+ }
+ 
+ 
+ std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
+ 
+ }
+-
