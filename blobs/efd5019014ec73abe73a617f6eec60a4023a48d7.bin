@@ -1,0 +1,34 @@
+===================================================================
+--- state.h (before)	snapshot
++++ state.h (after)	external
+@@ -0,0 +1,30 @@
++#pragma once
++#include<iostream>
++#include<vector>
++
++#include"common.h"
++
++class State{
++  public:
++    State(std::vector<std::vector<int>> kingdom);
++    ~State();
++
++    bool apply(Direction dir);
++    void undo();
++
++
++  private:
++    struct MoveHistory{
++      Direction dir;
++      Pos from;
++      Pos to;
++      long long score_delta;
++    };
++
++    std::vector<std::vector<int>> init_kingdom_;
++    std::vector<std::vector<int>> kingdom_;
++    Pos pos_;
++    std::vector<MoveHistory> history_;
++    long long score_;
++    int turn_;
++};
