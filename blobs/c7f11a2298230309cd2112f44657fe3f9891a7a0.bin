@@ -1,0 +1,89 @@
+# Record 1: file:///home/hase/trace-pilot-experiment1/src/state.h
+```diff
+===================================================================
+--- state.h (before)	snapshot
++++ state.h (after)	idle
+@@ -13,11 +13,18 @@
+     void undo();
+ 
+ 
+   private:
++    struct MoveHistory{
++      Direction dir;
++      Pos from;
++      Pos to;
++      long long score_delta;
++    };
++
+     std::vector<std::vector<int>> init_kingdom_;
+     std::vector<std::vector<int>> kingdom_;
+     Pos pos_;
+-    std::vector<Direction> path_;
++    std::vector<MoveHistory> history_;
+     long long score_;
+     int turn_;
+ };
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment1/src/state.cpp
+```diff
+===================================================================
+--- state.cpp (before)	snapshot
++++ state.cpp (after)	idle
+@@ -5,9 +5,9 @@
+   ,init_kingdom_(kingdom)
+   ,pos_(Pos(0,0))
+   ,turn_(0)
+   ,score_(0)
+-  ,path_({})
++  ,history_({})
+ {
+ 
+   kingdom_[pos_.i][pos_.j]=-1;
+ }
+@@ -22,14 +22,28 @@
+   if(kingdom_[next_pos.i][next_pos.j]==-1){
+     return false;
+   }
+ 
++  int next_turn=turn_+1;
++  long long score_delta=1LL*next_turn*init_kingdom_[next_pos.i][next_pos.j];
++  history_.push_back({dir,pos_,next_pos,score_delta});
++
+   pos_=next_pos;
+   kingdom_[pos_.i][pos_.j]=-1;
+-  path_.emplace_back(dir);
++  turn_=next_turn;
++  score_+=score_delta;
+   return true;
+ }
+ 
+ void State::undo(){
++  if(history_.empty()){
++    return;
++  }
+ 
+-}
++  MoveHistory last=history_.back();
++  history_.pop_back();
+ 
++  kingdom_[last.to.i][last.to.j]=init_kingdom_[last.to.i][last.to.j];
++  pos_=last.from;
++  score_-=last.score_delta;
++  --turn_;
++}
+
+```
+
+`MoveHistory` を `State` の内部履歴に追加して、`apply()` で差分保存、`undo()` でその差分と位置を復元する形に編集します。あわせてビルドまで通して、型や初期化順の問題を確認します。
+
+作業ツリーには既に別変更がありますが、今回触るのは `src/state.h` と `src/state.cpp` に絞ります。`state.cpp` は既に変更済み扱いなので、既存内容を崩さずこの機能だけ追加します。
+
+実装は入りました。次にビルドして、`MoveHistory` の初期化や未使用メンバ警告より重大なコンパイルエラーがないか確認します。
+
+`MoveHistory` を使う形で `apply()` / `undo()` を実装しました。
+
+変更内容は [src/state.h](/home/hase/trace-pilot-experiment1/src/state.h:14) と [src/state.cpp](/home/hase/trace-pilot-experiment1/src/state.cpp:17) です。`apply()` では有効な移動だけ `history_` に `{dir, from, to, score_delta}` を積み、`turn_` と `score_` を更新します。`undo()` では最後の履歴から移動先マスの訪問済み状態を戻し、位置・スコア・ターンを1手分戻します。
+
+確認として `cmake --build build` は成功しています。
