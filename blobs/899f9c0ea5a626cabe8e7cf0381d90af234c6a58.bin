@@ -1,0 +1,17 @@
++  if(map_size>=2 && state.pos()==Pos(map_size-1,1)){
++    const std::vector<Pos> last_edge={
++      Pos(map_size-2,0),
++      Pos(map_size-1,0),
++      Pos(map_size-2,1),
++    };
++
++    for(const Pos& next:last_edge){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
++  }
++
