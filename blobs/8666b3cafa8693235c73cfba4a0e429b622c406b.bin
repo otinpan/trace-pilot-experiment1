@@ -1,0 +1,1 @@
+Modify the turn_back.cpp strategy to change the boundary conditions based on the iteration index 'i'. Specifically, update the conditions checking the state's position 'j' to depend on whether 'i%4' equals 0 or not, with different boundary checks accordingly.
