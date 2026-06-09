@@ -1,0 +1,2 @@
+先に通る:  (0,0) → min col1 → min col2 → ... → min colN-1
+後で通る:  残り colN-1 → 残り colN-2 → ... → 残り col0
