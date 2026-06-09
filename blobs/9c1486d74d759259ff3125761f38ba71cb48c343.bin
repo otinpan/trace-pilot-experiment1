@@ -1,0 +1,35 @@
+===================================================================
+--- turn_back.cpp (before)	snapshot
++++ turn_back.cpp (after)	idle
+@@ -47,11 +47,14 @@
+       }
+       result.emplace_back(state.pos());
+       logger.log(state);
+ 
+-      if(state.pos().j==map_size-2 || state.pos().j==1){
++      if(i%4==0 && state.pos().j==map_size-2){
+         break;
+       }
++      if(i%4!=0 && state.pos().j==1){
++        break;
++      }
+     }
+     if(i+2>=map_size){
+       break;
+     }
+@@ -86,11 +89,14 @@
+       }
+       result.emplace_back(state.pos());
+       logger.log(state);
+ 
+-      if(state.pos().j==0||state.pos().j==map_size-1){
++      if(i%4==0 && state.pos().j==0){
+         break;
+       }
++      if(i%4!=0 && state.pos().j==map_size-1){
++        break;
++      }
+ 
+     }
+     if(i==0){
+       break;
