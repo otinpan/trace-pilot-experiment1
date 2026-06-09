@@ -13,6 +13,7 @@ add_executable(ahc062
     src/state.cpp
     src/strategy/strategy.cpp
     src/strategy/greedy.cpp
+    src/strategy/turn_back.cpp
 )
 
 target_include_directories(ahc062 PRIVATE

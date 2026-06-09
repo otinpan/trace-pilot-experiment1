@@ -3,6 +3,7 @@
 
 #include"common.h"
 #include"strategy/greedy.h"
+#include"strategy/turn_back.h"
 #include"state.h"
 #include"simulator.h"
 int map_size=0;
@@ -24,7 +25,7 @@ int main(){
   State state(g);
   Logger logger("log.txt");
 
-  Greedy strategy;
+  TurnBack strategy;
   std::vector<Pos> result=strategy.solve(state,logger);
 
   for(const auto& res:result){

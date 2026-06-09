@@ -1,3 +1,7 @@
+// @trace-pilot 1583153618069a90028ab8b5f7cb8eaad9fc85ed
+// ジグザグ動く
+
+
 #include"greedy.h"
 
 Greedy::Greedy()

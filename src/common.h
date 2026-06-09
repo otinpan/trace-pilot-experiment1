@@ -18,6 +18,10 @@ struct Pos{
     return Pos(i+other.i,j+other.j);
   }
 
+  Pos operator-(const Pos& other) const{
+    return Pos(i-other.i,j-other.j);
+  }
+
   bool operator==(const Pos& other) const{
     return i==other.i && j==other.j;
   }
@@ -53,3 +57,13 @@ const std::array<Pos,8> DIRS={
   Pos(-1,-1)
 };
 
+inline Direction get_direction(const Pos& from,const Pos& to){
+  Pos diff=to-from;
+  for(int i=0;i<static_cast<int>(DIRS.size());i++){
+    if(DIRS[i]==diff){
+      return static_cast<Direction>(i);
+    }
+  }
+  assert(false);
+  return Direction::UP;
+}

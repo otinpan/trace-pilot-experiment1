@@ -11,7 +11,5 @@ void Logger::log(const std::string &s){
 }
 
 void Logger::log(const State& state){
-  ofs_<<"turn: "<<state.turn()<<'\n';
   ofs_<<"pos : ("<<state.pos().i<<","<<state.pos().j<<")\n";
-  ofs_<<"score : "<<state.score()<<'\n';
 }
