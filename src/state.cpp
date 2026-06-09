@@ -15,6 +15,7 @@ State::State(std::vector<std::vector<int>> kingdom)
 
 State::~State()=default;
 
+// dirの方向に1手移動する
 bool State::apply(Direction dir){
   Pos next_pos=pos_+DIRS[static_cast<int>(dir)];
   if(!next_pos.is_on_map()){
