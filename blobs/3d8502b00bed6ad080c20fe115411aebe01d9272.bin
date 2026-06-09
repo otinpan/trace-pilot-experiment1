@@ -1,0 +1,20 @@
+あります。シンプルなジグザグでも、「どちら向きに蛇行するか」 を選ぶだけでかなり変わります。
+基本はこれです。
+高い A が多い場所を、なるべく後半に通る向きにする
+例えば候補を複数作ります。
+1. 左上から横ジグザグ2. 左上から縦ジグザグ3. 途中で左右反転したジグザグ4. 途中で上下反転したジグザグ
+ただし開始位置は (0,0) 固定なので、完全な反転はできません。
+そのため現実的にはまずこの2つを試すのが簡単です。
+横ジグザグ:(0,0)→(0,1)→...→(0,N-1)→(1,N-1)→...縦ジグザグ:(0,0)→(1,0)→...→(N-1,0)→(N-1,1)→...
+両方のスコアを計算して、高い方を採用します。
+C++vector<pair<int,int>> zigzag_horizontal(int N) {    vector<pair<int,int>> path;    for (int i = 0; i < N; i++) {        if (i % 2 == 0) {            for (int j = 0; j < N; j++) path.push_back({i, j});        } else {            for (int j = N - 1; j >= 0; j--) path.push_back({i, j});        }    }    return path;}vector<pair<int,int>> zigzag_vertical(int N) {    vector<pair<int,int>> path;    for (int j = 0; j < N; j++) {        if (j % 2 == 0) {            for (int i = 0; i < N; i++) path.push_back({i, j});        } else {            for (int i = N - 1; i >= 0; i--) path.push_back({i, j});        }    }    return path;}
+スコア計算：
+C++long long score_path(    const vector<pair<int,int>>& path,    const vector<vector<int>>& A) {    long long V = 0;    for (int k = 0; k < (int)path.size(); k++) {        auto [i, j] = path[k];        V += 1LL * k * A[i][j];    }    return V;}
+選択：
+C++auto p1 = zigzag_horizontal(N);auto p2 = zigzag_vertical(N);if (score_path(p2, A) > score_path(p1, A)) {    path = p2;} else {    path = p1;}
+さらに簡単な工夫として、最後に来る場所の A が大きいジグザグを選ぶ だけでも効果があります。
+横ジグザグの終点縦ジグザグの終点
+を比較して、大きい方を終点にする経路を選ぶ、という考え方です。
+ただし一番確実なのは、
+横ジグザグと縦ジグザグを両方作る↓実際にスコアを計算する↓高い方を採用
+です。
