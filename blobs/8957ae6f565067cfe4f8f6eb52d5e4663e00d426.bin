@@ -1,0 +1,30 @@
+vector<pair<int,int>> two_row_min_first(
+    int r,
+    int N,
+    const vector<vector<int>>& A
+) {
+    vector<pair<int,int>> first;
+    vector<pair<int,int>> second;
+
+    // r, r+1 の2行を見る
+    for (int j = 0; j < N; j++) {
+        pair<int,int> upper = {r, j};
+        pair<int,int> lower = {r + 1, j};
+
+        if (A[r][j] <= A[r + 1][j]) {
+            first.push_back(upper);
+            second.push_back(lower);
+        } else {
+            first.push_back(lower);
+            second.push_back(upper);
+        }
+    }
+
+    reverse(second.begin(), second.end());
+
+    vector<pair<int,int>> block;
+    for (auto p : first) block.push_back(p);
+    for (auto p : second) block.push_back(p);
+
+    return block;
+}
