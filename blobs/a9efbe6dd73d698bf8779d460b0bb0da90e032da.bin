@@ -1,0 +1,41 @@
+# Record 1: /home/hase/trace-pilot-experiment1/src/strategy/turn_back.cpp
+```diff
+===================================================================
+--- turn_back.cpp (before)	snapshot
++++ turn_back.cpp (after)	idle
+@@ -47,11 +47,14 @@
+       }
+       result.emplace_back(state.pos());
+       logger.log(state);
+ 
+-      if(state.pos().j==map_size-2 || state.pos().j==1){
++      if(i%4==0 && state.pos().j==map_size-2){
+         break;
+       }
++      if(i%4!=0 && state.pos().j==1){
++        break;
++      }
+     }
+     if(i+2>=map_size){
+       break;
+     }
+@@ -86,11 +89,14 @@
+       }
+       result.emplace_back(state.pos());
+       logger.log(state);
+ 
+-      if(state.pos().j==0||state.pos().j==map_size-1){
++      if(i%4==0 && state.pos().j==0){
+         break;
+       }
++      if(i%4!=0 && state.pos().j==map_size-1){
++        break;
++      }
+ 
+     }
+     if(i==0){
+       break;
+
+```
+
+Modified the if conditions to check if 'i % 4' equals 0 and 'state.pos().j' matches certain boundary values, and similarly for 'i % 4 != 0', thereby making the boundary check depend on the iteration count modulo 4 as well as position, adjusting break conditions accordingly.
