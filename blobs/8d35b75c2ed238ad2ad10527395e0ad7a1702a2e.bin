@@ -1,0 +1,11 @@
+long long score_path(
+    const vector<pair<int,int>>& path,
+    const vector<vector<int>>& A
+) {
+    long long V = 0;
+    for (int k = 0; k < (int)path.size(); k++) {
+        auto [i, j] = path[k];
+        V += 1LL * k * A[i][j];
+    }
+    return V;
+}
