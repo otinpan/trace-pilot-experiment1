@@ -1,0 +1,1 @@
+Refactor the boundary condition checks in the turn_back.cpp file to depend on the iteration variable 'i' modulo 4 and position 'j', replacing fixed boundary checks with conditions involving 'i % 4' and 'state.pos().j'.
