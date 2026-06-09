@@ -1,0 +1,3 @@
+変更前 = i*A[path[i]] + j*A[path[j]]
+変更後 = i*A[path[j]] + j*A[path[i]]
+差分 = 変更後 - 変更前
