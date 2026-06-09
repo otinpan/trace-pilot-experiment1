@@ -1,0 +1,63 @@
+# Record 1: file:///home/hase/trace-pilot-experiment1/src/strategy/turn_back.cpp
+```diff
+===================================================================
+--- turn_back.cpp (before)	snapshot
++++ turn_back.cpp (after)	idle
+@@ -69,8 +69,25 @@
+     result.emplace_back(state.pos());
+     logger.log(state);
+   }
+ 
++  if(map_size>=2 && state.pos()==Pos(map_size-1,1)){
++    const std::vector<Pos> last_edge={
++      Pos(map_size-2,0),
++      Pos(map_size-1,0),
++      Pos(map_size-2,1),
++    };
++
++    for(const Pos& next:last_edge){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
++  }
++
+   // 折り返し
+   logger.log("start back\n");
+   for(int i=map_size-2;i>=0;i-=2){
+     while(true){
+
+```
+
+`turn_back.cpp` に最後の2行ペアだけの補完処理を入れます。現在位置 `(199,1)` から隣接移動だけで指定順に行くには `(198,0) -> (199,0) -> (198,1)` がすべて未訪問である必要があるので、既存の `state.apply()` を使って失敗時は従来通り返す形にします。
+
+編集箇所は往路ループ直後、`start back` の直前に限定します。`map_size >= 2` かつ現在地が期待位置のときだけ動くようにして、他サイズや途中打ち切りには影響を出さない形にします。
+
+実装は入りました。続いて C++ のビルドを通して、少なくともコンパイル上の問題がないことを確認します。
+
+ビルドは通りました。実行時ログも確認したいので、作業ツリーの `log.txt` を上書きしないよう `/tmp` を作業ディレクトリにしてサンプル入力で動かします。
+
+サンプル実行は完了しました。`/tmp/log.txt` の `start back` 直前に指定の3手が入っているか、末尾の未訪問一覧から消えているかを確認します。
+
+対応しました。`start back` の直前に、現在地が最後のペアの `(199,1)` の場合だけ
+
+```text
+(198,0) -> (199,0) -> (198,1)
+```
+
+を通る特別処理を [src/strategy/turn_back.cpp](/home/hase/trace-pilot-experiment1/src/strategy/turn_back.cpp:73) に追加しました。
+
+確認結果:
+
+```text
+pos : (199,1)
+pos : (198,0)
+pos : (199,0)
+pos : (198,1)
+start back
+```
+
+`cmake --build build` も成功しています。サンプル実行は作業ツリーの `log.txt` を上書きしないよう `/tmp` で行い、末尾の未訪問一覧から該当3マスが消えていることも確認しました。
