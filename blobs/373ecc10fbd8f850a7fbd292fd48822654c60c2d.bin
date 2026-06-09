@@ -1,0 +1,1 @@
+Generate an interactive SVG visualization web page that includes a global map, a focused map, and a detailed plot section showing statistical data (mean, 25-75%, min-max) of a matrix A at coordinates [i_k][j_k], with appropriate styling and user interaction features.
