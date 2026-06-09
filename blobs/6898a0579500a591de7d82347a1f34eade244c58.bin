@@ -1,0 +1,197 @@
+# Record 1: file:///home/hase/trace-pilot-experiment1/src/strategy/turn_back.cpp
+```diff
+===================================================================
+--- turn_back.cpp (before)	snapshot
++++ turn_back.cpp (after)	idle
+@@ -12,9 +12,23 @@
+ TurnBack::~TurnBack()=default;
+ 
+ 
+ std::vector<Pos> TurnBack::solve(State& state,Logger& logger){
+-  return zigzag_horizontal(state,logger);
++  State horizontal_state=state;
++  State vertical_state=state;
++
++  std::vector<Pos> horizontal_result=zigzag_horizontal(horizontal_state,logger);
++  std::vector<Pos> vertical_result=zigzag_vertical(vertical_state,logger);
++
++  if(horizontal_state.score()>=vertical_state.score()){
++    state=horizontal_state;
++    logger.log(state);
++    return horizontal_result;
++  }
++
++  state=vertical_state;
++  logger.log(state);
++  return vertical_result;
+ }
+ 
+ 
+ std::vector<Pos> TurnBack::zigzag_horizontal(State& state,Logger& logger){
+@@ -144,6 +158,127 @@
+   return result;
+ }
+ 
+ std::vector<Pos> TurnBack::zigzag_vertical(State& state,Logger& logger){
+-  return {};
++  std::vector<Pos> result;
++  result.emplace_back(state.pos());
++  logger.log(state);
++
++  for(int j=0;j<map_size;j+=2){
++    while(true){
++      Pos now=state.pos();
++      int i=j%4==0 ? now.i+1 : now.i-1;
++      assert(i>=1&&i<map_size-1);
++      int left=state.kingdom()[i][j];
++      int right=state.kingdom()[i][j+1];
++      Pos next=left>right ? Pos(i,j+1) : Pos(i,j);
++
++      // 右の列との接続
++      if(i==map_size-2&&j%4==0){
++        next=Pos(i,j+1);
++      }
++      if(i==1&&j%4!=0){
++        next=Pos(i,j+1);
++      }
++
++      Direction dir=get_direction(now,next);
++
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++
++      if(j%4==0&&state.pos().i==map_size-2){
++        break;
++      }
++      if(j%4!=0&&state.pos().i==1){
++        break;
++      }
++    }
++    if(j+2>=map_size){
++      break;
++    }
++
++    int i=j%4==0 ? map_size-2 : 1;
++    Pos next=Pos(i,j+2);
++    Direction dir=get_direction(state.pos(),next);
++
++    if(!state.apply(dir)){
++      return result;
++    }
++    result.emplace_back(state.pos());
++    logger.log(state);
++  }
++
++  if(map_size>=2 && state.pos()==Pos(1,map_size-1)){
++    const std::vector<Pos> last_edge={
++      Pos(0,map_size-2),
++      Pos(0,map_size-1),
++      Pos(1,map_size-2),
++    };
++
++    for(const Pos& next:last_edge){
++      Direction dir=get_direction(state.pos(),next);
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++    }
++  }
++
++  // 折り返し
++  logger.log("start back\n");
++  for(int j=map_size-2;j>=0;j-=2){
++    while(true){
++      Pos now=state.pos();
++      int i=j%4==0 ? now.i-1 : now.i+1;
++      assert(i>=0 && i<map_size);
++
++      Pos next=state.kingdom()[i][j]!=-1 ? Pos(i,j) :Pos(i,j+1);
++      // 右のマスを拾っていく
++      if(i==0 || i==map_size-1){
++        next=Pos(i,j+1);
++      }
++
++      Direction dir=get_direction(now,next);
++      if(!state.apply(dir)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++
++      if(j%4==0&&state.pos().i==0){
++        break;
++      }
++      if(j%4!=0&&state.pos().i==map_size-1){
++        break;
++      }
++    }
++    if(j==0){
++      break;
++    }
++
++    // 端は3個左に進む
++    while(true){
++      if(!state.apply(Direction::LEFT)){
++        return result;
++      }
++      result.emplace_back(state.pos());
++      logger.log(state);
++
++      if(state.pos().j==j-2){
++        break;
++      }
++    }
++
++  }
++  for(int i=0;i<map_size;i++){
++    for(int j=0;j<map_size;j++){
++      if(state.kingdom()[i][j]!=-1){
++        logger.log("("+std::to_string(i)+","+std::to_string(j)+")");
++      }
++    }
++  }
++  return result;
+ }
+
+```
+
+まず実装箇所を確認します。`greedy` と `turn_back` の既存ロジックを並べて読んで、同じ比較方針を入れる場所を特定します。
+
+`turn_back` は未追跡ファイルとして追加済みの状態で、作業ツリーには他にも既存変更があります。今回は `turn_back.cpp` 周辺だけに絞って、ユーザー側の変更を戻さずに入れます。
+
+`greedy` の `solve` は状態を2つコピーして両方実行し、`score()` が高い方の状態と経路を採用しています。`turn_back` は今 `zigzag_horizontal` だけを返していて、`zigzag_vertical` は空なので、縦版を実装して同じ比較にします。
+
+これから `TurnBack::solve` を `greedy` と同じ2状態比較に変え、`zigzag_vertical` は横版を i/j 軸で転置した実装にします。探索時のログが両候補分出る点も `greedy` と同じ挙動に合わせます。
+
+実装を入れました。次にビルドして、必要なら代表入力で実行して経路生成が落ちないか確認します。
+
+ビルドは通っています。`main` は既に `TurnBack` を使っているので、手元のサンプル入力で実行してクラッシュや assert が出ないか見ます。
+
+代表入力の実行も正常終了しました。`turn_back.cpp` は未追跡ファイルなので通常の `git diff` には出ていませんが、編集内容そのものは反映済みです。出力の行数も確認します。
+
+出力は 40000 行で、20x20 ではなく大きいケースサイズに対する全マス数分の経路が出ています。最後に公式ツール側で形式チェックできるコマンドを確認して、可能ならスコア計算まで通します。
+
+公式ツールは `vis <input> <output>` で検証できます。生成した出力をそのまま通して、エラーがないか確認します。
+
+できます。実装しました。
+
+変更内容:
+- [src/strategy/turn_back.cpp](/home/hase/trace-pilot-experiment1/src/strategy/turn_back.cpp:15) の `solve` を `greedy` と同じ方式に変更
+  - `horizontal_state`
+  - `vertical_state`
+  - 両方実行して `score()` が高い方を採用
+- [src/strategy/turn_back.cpp](/home/hase/trace-pilot-experiment1/src/strategy/turn_back.cpp:161) に縦方向版 `zigzag_vertical` を実装
+  - 横方向版を i/j 軸で転置したロジックです
+
+確認:
+- `cmake --build build` 成功
+- `build/ahc062 < tools/in/0000.txt > /tmp/turn_back_0000.out` 成功
+- `tools/target/release/vis tools/in/0000.txt /tmp/turn_back_0000.out` 成功
+  - `Score = 465355057`
+
+注意点として、`src/strategy/turn_back.cpp` と `turn_back.h` はもともと git 上では未追跡ファイル扱いです。ビルドしたので `build/ahc062` などの生成物も更新されています。
