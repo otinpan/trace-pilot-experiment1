@@ -1,0 +1,11 @@
+vector<pair<int,int>> make_snake(int N) {
+    vector<pair<int,int>> path;
+    for (int i = 0; i < N; i++) {
+        if (i % 2 == 0) {
+            for (int j = 0; j < N; j++) path.push_back({i, j});
+        } else {
+            for (int j = N - 1; j >= 0; j--) path.push_back({i, j});
+        }
+    }
+    return path;
+}
