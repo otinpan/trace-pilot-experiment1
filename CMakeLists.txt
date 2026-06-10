@@ -9,7 +9,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(ahc062
     src/main.cpp
     src/logger.cpp
-    src/simulator.cpp
     src/state.cpp
     src/strategy/strategy.cpp
     src/strategy/greedy.cpp
