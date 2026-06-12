@@ -1,13 +1,1 @@
-# Context from my IDE setup:
-
-## Active file: src/strategy/greedy.cpp
-
-## Open tabs:
-- greedy.cpp: src/strategy/greedy.cpp
-- main.cpp: src/main.cpp
-- CMakeLists.txt: CMakeLists.txt
-- events.jsonl: .intent-tracer/events.jsonl
-- f52e5e42e4384f9e5db91967e3b35983b1002d93.bin: .trace-worktree/blobs/f52e5e42e4384f9e5db91967e3b35983b1002d93.bin
-
-## My request for Codex:
 zigzag_verticalでは縦方向にジグザグ移動します。horizontalとverticalでスコアを比較し、高い方を採用します。zigzag_verticalとsolveを完成させてください
