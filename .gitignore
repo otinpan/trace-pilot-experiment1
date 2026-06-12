@@ -1,6 +1,6 @@
-./tools/
-./u5OpcTjC.zip
+tools/
 .trace-worktree/
 .intent-tracer/
-./QUESTION.md
-./build/
+build/
+log.txt
+out.txt
