@@ -18,7 +18,6 @@ class State{
     int turn() const{return turn_;}
 
   private:
-// @trace-pilot df333fb31bb50d819e5b717da0880a9ce331d21f
     struct MoveHistory{
       Direction dir;
       Pos from;
@@ -29,7 +28,6 @@ class State{
     std::vector<std::vector<int>> init_kingdom_;
     std::vector<std::vector<int>> kingdom_;
     Pos pos_;
-// @trace-pilot df333fb31bb50d819e5b717da0880a9ce331d21f
     std::vector<MoveHistory> history_;
     long long score_;
     int turn_;

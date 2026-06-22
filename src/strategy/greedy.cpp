@@ -1,4 +1,3 @@
-// @trace-pilot 1583153618069a90028ab8b5f7cb8eaad9fc85ed
 // ジグザグ動く
 
 
@@ -13,7 +12,6 @@ Greedy::Greedy()
 Greedy::~Greedy()=default;
 
 std::vector<Pos> Greedy::solve(State& state,Logger& logger){
-// @trace-pilot 3a14840b8b0ca02a17bd960dfb0d355682b5345b
   State horizontal_state=state;
   State vertical_state=state;
 
@@ -32,12 +30,10 @@ std::vector<Pos> Greedy::solve(State& state,Logger& logger){
 }
 
 std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
-// @trace-pilot 93865884d8d22111f10b91a82813f75525fc743b
   std::vector<Pos> result;
   result.reserve(map_size*map_size);
   result.push_back(state.pos());
 
-// @trace-pilot 93865884d8d22111f10b91a82813f75525fc743b
   for(int i=0;i<map_size;i++){
     if(i%2==0){
       while(state.pos().j+1<map_size){
@@ -70,7 +66,6 @@ std::vector<Pos> Greedy::zigzag_horizontal(State& state,Logger& logger){
 std::vector<Pos> Greedy::zigzag_vertical(State& state,Logger& logger){
   (void)logger;
 
-// @trace-pilot 3a14840b8b0ca02a17bd960dfb0d355682b5345b
   std::vector<Pos> result;
   result.reserve(map_size*map_size);
   result.push_back(state.pos());

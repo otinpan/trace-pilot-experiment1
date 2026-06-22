@@ -1,4 +1,3 @@
-// @trace-pilot 5019a1327ae16ae2163e74acf6c934cc1dc82c06
 // 小さい方を先に通り、大きい方を後で回収する
 
 #include"turn_back.h"
@@ -13,7 +12,6 @@ TurnBack::~TurnBack()=default;
 
 
 std::vector<Pos> TurnBack::solve(State& state,Logger& logger){
-// @trace-pilot 2768737f441256996d0b64eefa0061c1da4f5ff4
   State horizontal_state=state;
   State vertical_state=state;
 
@@ -34,7 +32,6 @@ std::vector<Pos> TurnBack::solve(State& state,Logger& logger){
 
 std::vector<Pos> TurnBack::zigzag_horizontal(State& state,Logger& logger){
   std::vector<Pos> result;
-  // @trace-pilot 7a3fa08b3e72f51f7bc722199b15663152e9fb82
   result.emplace_back(state.pos());
   logger.log(state);
 
@@ -85,7 +82,6 @@ std::vector<Pos> TurnBack::zigzag_horizontal(State& state,Logger& logger){
     logger.log(state);
   }
 
-// @trace-pilot 6f6e1fe1216af541f51612bc7a4ad186946db4f8
   if(map_size>=2 && state.pos()==Pos(map_size-1,1)){
     const std::vector<Pos> last_edge={
       Pos(map_size-2,0),
@@ -160,7 +156,6 @@ std::vector<Pos> TurnBack::zigzag_horizontal(State& state,Logger& logger){
 }
 
 std::vector<Pos> TurnBack::zigzag_vertical(State& state,Logger& logger){
-// @trace-pilot 2768737f441256996d0b64eefa0061c1da4f5ff4
   std::vector<Pos> result;
   result.emplace_back(state.pos());
   logger.log(state);
