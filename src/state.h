@@ -10,7 +10,6 @@ class State{
     ~State();
 
     bool apply(Direction dir);
-    void undo();
 
     const std::vector<std::vector<int>>& kingdom() const{return kingdom_;}
     const Pos& pos() const {return pos_;}

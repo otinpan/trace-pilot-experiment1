@@ -37,20 +37,3 @@ bool State::apply(Direction dir){
   score_+=score_delta;
   return true;
 }
-
-void State::undo(){
-// @trace-pilot df333fb31bb50d819e5b717da0880a9ce331d21f
-  if(history_.empty()){
-    return;
-  }
-
-// @trace-pilot df333fb31bb50d819e5b717da0880a9ce331d21f
-  MoveHistory last=history_.back();
-  history_.pop_back();
-
-// @trace-pilot df333fb31bb50d819e5b717da0880a9ce331d21f
-  kingdom_[last.to.i][last.to.j]=init_kingdom_[last.to.i][last.to.j];
-  pos_=last.from;
-  score_-=last.score_delta;
-  --turn_;
-}
