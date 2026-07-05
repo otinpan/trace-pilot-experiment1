@@ -1,0 +1,96 @@
+# Record 1: file:///home/hase/trace-pilot-experiment1/src/state.h
+```diff
+===================================================================
+--- state.h (before)	snapshot
++++ state.h (after)	idle
+@@ -9,8 +9,9 @@
+     State(std::vector<std::vector<int>> kingdom);
+     ~State();
+ 
+     bool apply(Direction dir);
++    bool undo();
+ 
+     const std::vector<std::vector<int>>& kingdom() const{return kingdom_;}
+     const Pos& pos() const {return pos_;}
+     long long score() const{return score_;}
+
+```
+
+# Record 2: file:///home/hase/trace-pilot-experiment1/src/state.cpp
+```diff
+===================================================================
+--- state.cpp (before)	snapshot
++++ state.cpp (after)	idle
+@@ -34,4 +34,19 @@
+   score_+=score_delta;
+   return true;
+ }
+ 
++// 最後の1手を取り消す
++bool State::undo(){
++  if(history_.empty()){
++    return false;
++  }
++
++  MoveHistory last=history_.back();
++  history_.pop_back();
++
++  kingdom_[last.to.i][last.to.j]=init_kingdom_[last.to.i][last.to.j];
++  pos_=last.from;
++  turn_--;
++  score_-=last.score_delta;
++  return true;
++}
+
+```
+
+# Record 3: file:///home/hase/trace-pilot-experiment1/build/CMakeFiles/TargetDirectories.txt
+```diff
+===================================================================
+--- TargetDirectories.txt (before)	snapshot
++++ TargetDirectories.txt (after)	create
+@@ -0,0 +1,3 @@
++/home/hase/trace-pilot-experiment1/build/CMakeFiles/ahc062.dir
++/home/hase/trace-pilot-experiment1/build/CMakeFiles/edit_cache.dir
++/home/hase/trace-pilot-experiment1/build/CMakeFiles/rebuild_cache.dir
+
+```
+
+はい、`MoveHistory` がちょうどそのための形になっています。`apply()` と対になるように、最後の移動を取り出して位置・訪問済み・スコア・ターンを戻す実装を追加します。
+
+実装範囲は小さそうです。`undo()` は「最後に踏んだ `to` を未訪問に戻し、現在位置を `from` に戻す」という処理になるので、ヘッダに宣言を足して `state.cpp` に本体を追加します。
+
+`Makefile` はなくて CMake 構成でした。変更後は CMake のビルドが通るところまで確認します。
+
+では編集します。空の履歴で `undo()` が呼ばれたときは失敗として `false` を返す形にして、DFS側でも扱いやすくします。
+
+`apply()` の逆操作としてはこれで揃いました。次にコンパイルして、既存コードとの型やリンクの問題がないか確認します。
+
+CMake の設定は通りました。続けて実際にビルドします。
+
+実装しました。
+
+[ `src/state.h` ](/home/hase/trace-pilot-experiment1/src/state.h) に `bool undo();` を追加し、[ `src/state.cpp` ](/home/hase/trace-pilot-experiment1/src/state.cpp) に本体を追加しています。
+
+`undo()` の動きは次の通りです。
+
+```cpp
+bool State::undo(){
+  if(history_.empty()){
+    return false;
+  }
+
+  MoveHistory last=history_.back();
+  history_.pop_back();
+
+  kingdom_[last.to.i][last.to.j]=init_kingdom_[last.to.i][last.to.j];
+  pos_=last.from;
+  turn_--;
+  score_-=last.score_delta;
+  return true;
+}
+```
+
+つまり、最後に移動した先 `to` を未訪問に戻し、現在位置を `from` に戻し、`turn_` と `score_` も1手前に戻します。
+
+確認として `cmake -S . -B build` と `cmake --build build` を実行し、ビルド成功しています。
