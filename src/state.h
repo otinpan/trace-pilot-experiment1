@@ -10,6 +10,8 @@ class State{
     ~State();
 
     bool apply(Direction dir);
+// @trace-pilot 732c54cd0e983c353bcd276a862b9b17a9eabfd6
+    void undo();
 
     const std::vector<std::vector<int>>& kingdom() const{return kingdom_;}
     const Pos& pos() const {return pos_;}
