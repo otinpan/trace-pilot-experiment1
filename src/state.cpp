@@ -35,7 +35,6 @@ bool State::apply(Direction dir){
   return true;
 }
 
-// @trace-pilot 732c54cd0e983c353bcd276a862b9b17a9eabfd6
 void State::undo(){
   if(history_.empty()){
     return;
